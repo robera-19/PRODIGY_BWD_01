@@ -51,3 +51,24 @@ app.get("/users/:id", (req, res) => {
   if (!user) return res.status(404).json({ error: "User not found" }); // Not found
   res.json(user); // Return user if found
 });
+
+
+// UPDATE a user by ID
+app.put("/users/:id", (req, res) => {
+  const user = users[req.params.id]; // Find user by ID
+  if (!user) return res.status(404).json({ error: "User not found" }); // Not found
+
+  try {
+    // Validate updated user input using Zod
+    const validatedUser = userSchema.parse(req.body);
+
+    // Update user in in-memory storage
+    users[req.params.id] = { id: req.params.id, ...validatedUser };
+
+    // Respond with the updated user
+    res.json(users[req.params.id]);
+  } catch (err) {
+    // Respond with error if validation fails
+    res.status(400).json({ error: err.errors || err.message });
+  }
+});
