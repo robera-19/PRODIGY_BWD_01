@@ -72,3 +72,22 @@ app.put("/users/:id", (req, res) => {
     res.status(400).json({ error: err.errors || err.message });
   }
 });
+
+
+// DELETE a user by ID
+app.delete("/users/:id", (req, res) => {
+  const user = users[req.params.id]; // Find user by ID
+  if (!user) return res.status(404).json({ error: "User not found" }); // Not found
+
+  // Delete user from in-memory storage
+  delete users[req.params.id];
+
+  // Respond with no content (HTTP 204: No Content)
+  res.status(204).send();
+});
+
+// Start the server
+const PORT = 3500;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
